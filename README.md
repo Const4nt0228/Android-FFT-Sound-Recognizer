@@ -14,3 +14,18 @@ Purpose of this program
 -> RecordAudio, FFT (using RealDoubleFFT)
 
 https://github.com/NoonChi-PIANO/noonchi-piano-rep
+
+
+ca.uol.aig.fftpack.RealDoubleFFT와  JTransform의 DoubleFFT_1D 둘다 사용해 보았는데 
+RealDoubleFFT의 성능이 조금 더 높기에 전자를 사용했다. 
+
+현재 테스트 중인 피아노 대역대가 0~4096까지며 이렇게 된다면 0~7옥타브까지 측정이 가능핟
+
+line:40 의 frequency 가 8192인 이유는 마이크가 잡아내는 소리는 
+
+![image](https://user-images.githubusercontent.com/66546156/125195732-ea103c80-e291-11eb-8895-19ed008c5413.png)
+
+요런 형식으로 wave 형식으로 파동치는 형식이다. 
+그렇기 때문에 java version으로 마이크 없이 샘플 음만 테스트 하는 경우에는 .wav 확장자를 사용해서 한다.
+
+![image](https://user-images.githubusercontent.com/66546156/125195702-c0efac00-e291-11eb-99ba-d88d4db8c1a4.png)
