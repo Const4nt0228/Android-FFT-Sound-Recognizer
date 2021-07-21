@@ -1,0 +1,7 @@
+#시도해볼만한 것들
+1. noise suppressor 이용 잡음 제거 
+https://www.masterqna.com/android/12050/%EC%8A%A4%ED%94%BC%EC%BB%A4%EA%B0%80-%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A5%BC-%EA%B0%84%EC%84%AD%ED%95%98%EB%8A%94%EA%B2%83-%EA%B0%99%EC%8A%B5%EB%8B%88%EB%8B%A4?show=12064#c12064
+
+2. 기존 주파수 범위 8820 ~ 범위 늘리기
+기존은 배열처리가 너무 많아서 4096개정도까지가 최적화 
+스레드로 돌리기
