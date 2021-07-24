@@ -201,7 +201,7 @@ public class scaleDetector extends Activity implements OnClickListener {
                         mag[k] = Math.sqrt(Math.pow(summary[2*k],2)+Math.pow(summary[2*k+1],2));
                     }
 
-
+                    //ㅇㄴ
                     // publishProgress를 호출하면 onProgressUpdate가 호출된다.
                     //publishProgress(toTransform);
 
