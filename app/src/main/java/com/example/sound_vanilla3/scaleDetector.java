@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import ca.uol.aig.fftpack.RealDoubleFFT;
+import android.media.audiofx.NoiseSuppressor;
 
 // FFT(Fast Fourier Transform) DFT 알고리즘 : 데이터를 시간 기준(time base)에서 주파수 기준(frequency base)으로 바꾸는데 사용.
 
@@ -56,6 +57,8 @@ public class scaleDetector extends Activity implements OnClickListener {
     RecordAudio recordTask;
     // Bitmap 이미지를 표시하기 위해 ImageView를 사용한다. 이 이미지는 현재 오디오 스트림에서 주파수들의 레벨을 나타낸다.
     // 이 레벨들을 그리려면 Bitmap에서 구성한 Canvas 객체와 Paint객체가 필요하다.
+    private static final String TAG = scaleDetector.class.getSimpleName();
+
 
     ImageView imageView;
     Bitmap bitmap;
@@ -158,6 +161,13 @@ public class scaleDetector extends Activity implements OnClickListener {
                 double[] toTransform = new double[blockSize];
                // double[] mag = new double[blockSize/2];
 
+                NoiseSuppressor noiseSuppressor = null;
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    noiseSuppressor = NoiseSuppressor.create(audioRecord.getAudioSessionId());
+                    Log.d(TAG, "NoiseSuppressor.isAvailable() " + NoiseSuppressor.isAvailable());
+                }
+
                 audioRecord.startRecording();
 
                 while (started) {
@@ -199,6 +209,7 @@ public class scaleDetector extends Activity implements OnClickListener {
                     // scThread.start();
                     publishProgress(mag);
                 }
+                noiseSuppressor.release();
                 audioRecord.stop();
             } catch (Throwable t) {
                 Log.e("AudioRecord", "Recording Failed");
