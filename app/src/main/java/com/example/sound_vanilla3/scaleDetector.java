@@ -44,7 +44,7 @@ public class scaleDetector extends Activity implements OnClickListener {
     int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 
     private RealDoubleFFT transformer;
-    int blockSize = 4096; // 2048->1024개의 배열이 나옴. 배열 한 칸당 4hz의 범위를 포함하고 있음. //4096->배열 2048이고 한칸당 2hz //배열 번호 1씩 증가-> hz는 2씩 증가한다.
+    int blockSize = 2048; // 2048->1024개의 배열이 나옴. 배열 한 칸당 4hz의 범위를 포함하고 있음. //4096->배열 2048이고 한칸당 2hz //배열 번호 1씩 증가-> hz는 2씩 증가한다.
     //배열이 40일때 hz는 80헤르츠를 가지고있다는것.
     DoubleFFT_1D fft = new DoubleFFT_1D(blockSize); //JTransform 라이브러리로 FFT 수행
 
@@ -111,7 +111,7 @@ public class scaleDetector extends Activity implements OnClickListener {
         YAxis leftYAxis = chart.getAxisLeft();
         XAxis xAxis = chart.getXAxis();
         xAxis.setAxisMinValue(0);
-        leftYAxis.setAxisMaxValue((float)400);
+        leftYAxis.setAxisMaxValue((float)200);
         leftYAxis.setAxisMinValue(0);
         chart.getAxisRight().setEnabled(false);
 
@@ -124,6 +124,7 @@ public class scaleDetector extends Activity implements OnClickListener {
             xChart=xChart+1;
         }
 
+        //초기 데이터
         ylabels.add(new BarEntry(2.2f,0));
         ylabels.add(new BarEntry(10f,512));
         ylabels.add(new BarEntry(63.f,800));
@@ -236,10 +237,10 @@ public class scaleDetector extends Activity implements OnClickListener {
                 xChart=xChart+1;
             }
 
-            for(int i=30; i<toTransform[0].length; i++){
-                if(toTransform[0][i]>25){
-                    //ylabels.add(new BarEntry((float)toTransform[0][i],i));
-                    ylabels.add(new BarEntry((float)i,i));
+            for(int i=43; i<toTransform[0].length; i++){
+                if(toTransform[0][i]>0){
+                    ylabels.add(new BarEntry((float)toTransform[0][i],i));
+                    //ylabels.add(new BarEntry((float)i,i));
                 }
             }
 
@@ -248,8 +249,8 @@ public class scaleDetector extends Activity implements OnClickListener {
             ArrayList<Double> hzSize = new ArrayList<Double>();
 
             //i 가 14부터 시작하는 이유: 배열한칸이 2hz 가지고있는상태이고, 20대에서 에어컨소리때문에 방해가생김 28부터 측정한다는뜻
-            for(int i=30; i<toTransform[0].length; i++){
-                if(toTransform[0][i]>45){
+            for(int i=43; i<toTransform[0].length; i++){
+                if(toTransform[0][i]>100){
                     hzList.add(i);   //list에는 대역대가들어감 배열 i 순서
                     hzSize.add(toTransform[0][i]); //list에는 toTransform[][i]의 안에있는 값(크기) 가들어감
                 }
