@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -43,7 +44,8 @@ public class scaleDetector extends Activity implements OnClickListener {
     int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 
     private RealDoubleFFT transformer;
-    int blockSize = 4096; // 2048->1024개의 배열이 나옴. 배열 한 칸당 4hz의 범위를 포함하고 있음.
+    int blockSize = 4096; // 2048->1024개의 배열이 나옴. 배열 한 칸당 4hz의 범위를 포함하고 있음. //4096->배열 2048이고 한칸당 2hz //배열 번호 1씩 증가-> hz는 2씩 증가한다.
+    //배열이 40일때 hz는 80헤르츠를 가지고있다는것.
     DoubleFFT_1D fft = new DoubleFFT_1D(blockSize); //JTransform 라이브러리로 FFT 수행
 
     String scale2 ;
@@ -107,7 +109,9 @@ public class scaleDetector extends Activity implements OnClickListener {
 
         chart =(BarChart)findViewById(R.id.chart);
         YAxis leftYAxis = chart.getAxisLeft();
-        leftYAxis.setAxisMaxValue((float)200);
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setAxisMinValue(0);
+        leftYAxis.setAxisMaxValue((float)400);
         leftYAxis.setAxisMinValue(0);
         chart.getAxisRight().setEnabled(false);
 
@@ -181,11 +185,11 @@ public class scaleDetector extends Activity implements OnClickListener {
 
                     //두개의 FFT 코드를 사용 잡음잡는것은 RealDoubleFFT가 훨씬 더 잘잡는다.
                     //RealDoubleFFT 부분
-                    //transformer.ft(toTransform);
+                    transformer.ft(toTransform);
 
                     //-> JTransform 부분
                     //Jtransform 은 입력에 실수부 허수부가 들어가야하므로 허수부 임의로 0으로 채워서 생성해줌
-                    double y[] = new double[blockSize];
+                    /*double y[] = new double[blockSize];
                     for (int i = 0; i < blockSize; i++) {
                         y[i] = 0;
                     }
@@ -195,19 +199,17 @@ public class scaleDetector extends Activity implements OnClickListener {
                         summary[2 * k] = toTransform[k]; //실수부
                         summary[2 * k + 1] = y[k]; //허수부 0으로 채워넣음.
                     }
-                  //  DoubleFFT_1D fft = new DoubleFFT_1D(blockSize);
+
                     fft.complexForward(summary);
                     for(int k=0;k<blockSize/2;k++){
                         mag[k] = Math.sqrt(Math.pow(summary[2*k],2)+Math.pow(summary[2*k+1],2));
-                    }
+                    }*/
+                    //Jtrans 끝
 
-                    //ㅇㄴ
                     // publishProgress를 호출하면 onProgressUpdate가 호출된다.
-                    //publishProgress(toTransform);
 
-                    //스레드를 여기에 넣어야할 듯?
-                    // scThread.start();
-                    publishProgress(mag);
+                    publishProgress(toTransform);
+                    //publishProgress(mag); //1D 로 쓸거면 mag, realdouble이면 toTrans
                 }
                 noiseSuppressor.release();
                 audioRecord.stop();
@@ -226,20 +228,27 @@ public class scaleDetector extends Activity implements OnClickListener {
             ylabels.clear();
 
             int xChart=0;
+
+
             for(int i=0; i<toTransform[0].length; i++){
+
                 xlabels.add(Integer.toString(xChart));
                 xChart=xChart+1;
             }
 
-            for(int i=0; i<toTransform[0].length; i++){
-                ylabels.add(new BarEntry((float)toTransform[0][i],i));
+            for(int i=30; i<toTransform[0].length; i++){
+                if(toTransform[0][i]>25){
+                    //ylabels.add(new BarEntry((float)toTransform[0][i],i));
+                    ylabels.add(new BarEntry((float)i,i));
+                }
             }
 
 
             ArrayList<Integer> hzList = new ArrayList<Integer>();
             ArrayList<Double> hzSize = new ArrayList<Double>();
 
-            for(int i=0; i<toTransform[0].length; i++){
+            //i 가 14부터 시작하는 이유: 배열한칸이 2hz 가지고있는상태이고, 20대에서 에어컨소리때문에 방해가생김 28부터 측정한다는뜻
+            for(int i=30; i<toTransform[0].length; i++){
                 if(toTransform[0][i]>45){
                     hzList.add(i);   //list에는 대역대가들어감 배열 i 순서
                     hzSize.add(toTransform[0][i]); //list에는 toTransform[][i]의 안에있는 값(크기) 가들어감
@@ -433,18 +442,6 @@ public class scaleDetector extends Activity implements OnClickListener {
             startStopButton.setText("Stop");
             recordTask = new RecordAudio();
             recordTask.execute();
-        }
-    }
-
-    private class scaleThread extends Thread{
-        RecordAudio rcAu = new RecordAudio();
-
-        public scaleThread(){
-
-        }
-        public void run(){
-            rcAu.onProgressUpdate(mag);
-
         }
     }
 
