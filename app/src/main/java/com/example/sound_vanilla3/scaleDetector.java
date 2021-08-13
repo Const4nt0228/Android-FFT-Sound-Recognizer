@@ -43,7 +43,7 @@ public class scaleDetector extends Activity implements OnClickListener {
     int frequency = 8192; //주파수가 8192일 경우 4096 까지 측정이 가능함
     int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
     int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
-
+    //
     private RealDoubleFFT transformer;
     int blockSize = 2048; // 2048->1024개의 배열이 나옴. 배열 한 칸당 4hz의 범위를 포함하고 있음. //4096->배열 2048이고 한칸당 2hz //배열 번호 1씩 증가-> hz는 2씩 증가한다.
     //배열이 40일때 hz는 80헤르츠를 가지고있다는것.
