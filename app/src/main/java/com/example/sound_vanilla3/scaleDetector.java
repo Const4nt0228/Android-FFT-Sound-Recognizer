@@ -45,7 +45,7 @@ public class scaleDetector extends Activity implements OnClickListener {
     int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
     //
     private RealDoubleFFT transformer;
-    int blockSize = 2048; // 2048->1024개의 배열이 나옴. 배열 한 칸당 4hz의 범위를 포함하고 있음. //4096->배열 2048이고 한칸당 2hz //배열 번호 1씩 증가-> hz는 2씩 증가한다.
+    int blockSize = 4096; // 2048->1024개의 배열이 나옴. 배열 한 칸당 4hz의 범위를 포함하고 있음. //4096->배열 2048이고 한칸당 2hz //배열 번호 1씩 증가-> hz는 2씩 증가한다.
     //배열이 40일때 hz는 80헤르츠를 가지고있다는것.
     DoubleFFT_1D fft = new DoubleFFT_1D(blockSize); //JTransform 라이브러리로 FFT 수행
 
@@ -112,6 +112,7 @@ public class scaleDetector extends Activity implements OnClickListener {
         YAxis leftYAxis = chart.getAxisLeft();
         XAxis xAxis = chart.getXAxis();
         xAxis.setAxisMinValue(0);
+        xAxis.setAxisMaxValue((float)1024);
         leftYAxis.setAxisMaxValue((float)200);
         leftYAxis.setAxisMinValue(0);
         chart.getAxisRight().setEnabled(false);
@@ -231,14 +232,13 @@ public class scaleDetector extends Activity implements OnClickListener {
 
             int xChart=0;
 
-
-            for(int i=0; i<toTransform[0].length; i++){
+            for(int i=0; i<1024; i++){
 
                 xlabels.add(Integer.toString(xChart));
                 xChart=xChart+1;
             }
 
-            for(int i=43; i<toTransform[0].length; i++){
+            for(int i=43; i<1024; i++){
                 if(toTransform[0][i]>0){
                     ylabels.add(new BarEntry((float)toTransform[0][i],i));
                     //ylabels.add(new BarEntry((float)i,i));
@@ -246,20 +246,22 @@ public class scaleDetector extends Activity implements OnClickListener {
             }
 
 
+
             ArrayList<Integer> hzList = new ArrayList<Integer>();
             ArrayList<Double> hzSize = new ArrayList<Double>();
 
             //i 가 14부터 시작하는 이유: 배열한칸이 2hz 가지고있는상태이고, 20대에서 에어컨소리때문에 방해가생김 28부터 측정한다는뜻
             for(int i=43; i<toTransform[0].length; i++){
-                if(toTransform[0][i]>100){
+                if(toTransform[0][i]>30){
                     hzList.add(i);   //list에는 대역대가들어감 배열 i 순서
                     hzSize.add(toTransform[0][i]); //list에는 toTransform[][i]의 안에있는 값(크기) 가들어감
                 }
             }
 
+
             Iterator iter = hzList.iterator();
             if(iter.hasNext()==true){
-                t0.setText(Integer.toString(hzList.get(0)*2)); //대역대
+                t0.setText(Integer.toString(hzList.get(0))); //대역대
                 t1.setText(Double.toString(hzSize.get(0)));      //소리 크기
                 //t2.setText(whichScale(hzList.get(0)*4));
                 t2.setText(whichScale2(toTransform));
@@ -286,120 +288,79 @@ public class scaleDetector extends Activity implements OnClickListener {
         if(toTransform[0][111]>99999){
 
         }
-        else if(toTransform[0][32]>55 ||toTransform[0][33]>55  ){
-            scale2 = "C"; //도
+        else if(toTransform[0][259]>55 ||toTransform[0][260]>55 || toTransform[0][261]>55  ){
+            scale2 = "C4"; //도
         }
-        else if(toTransform[0][73]>45 ||toTransform[0][74]>45){
-            scale2 = "D"; //레
+        else if(toTransform[0][293]>15 || toTransform[0][292]>30 || toTransform[0][294]>20 ||
+                toTransform[0][295]>30 || toTransform[0][296]>30 ){
+            scale2 = "D4"; //레
         }
-        else if(toTransform[0][41]>33 ){
-            scale2 = "E";
+        else if(toTransform[0][329]>50 ||toTransform[0][328]>50 || toTransform[0][330]>50  ){
+            scale2 = "E4"; //미
         }
-        else if(toTransform[0][75]>55 || toTransform[0][86]>55 || toTransform[0][87]>55){
-            scale2 = "F";
+        else if(toTransform[0][349]>50 || toTransform[0][348]>50 || toTransform[0][347]>50 ||
+                toTransform[0][346]>50 || toTransform[0][350]>50 || toTransform[0][351]>50 ){
+            scale2 = "F4"; //파
         }
-        else if(toTransform[0][48]>55 || toTransform[0][49]>55){
-            scale2 = "G";
+        else if(toTransform[0][391]>55 ||toTransform[0][390]>60 || toTransform[0][389]>60 ||
+                toTransform[0][392]>60  ){
+            scale2 = "G4"; //솔
         }
-        else if( toTransform[0][55]>35){
-            scale2 = "A";
+        else if(toTransform[0][440]>30 || toTransform[0][441]>30 || toTransform[0][442]>55 ||
+                toTransform[0][438]>30 || toTransform[0][436]>55 || toTransform[0][437]>55){
+            scale2 = "A4"; //라
         }
-        else if(toTransform[0][62]>45 || toTransform[0][61]>45  ){
-            scale2 = "B";
-        }
-
-        else if(toTransform[0][66]>35 || (toTransform[0][131]>45&&toTransform[0][131]<139)){
-            scale2 ="C"; //도
-        }
-        else if(toTransform[0][73]>55 || toTransform[0][61]>45 || toTransform[0][74]>45){
-            scale2 = "D"; //레
-            //74는 F4랑 겹쳐서 일단 뺌
-        }
-        else if(toTransform[0][70]>45 ){
-            scale2 = "E"; //미
-        }
-        else if(toTransform[0][87]>55 ||toTransform[0][86]>55 ){
-            scale2 = "F"; //파
-        }
-        else if((toTransform[0][98]>55 &&toTransform[0][97]>33) ||  toTransform[0][96]>55 || toTransform[0][85]>55 ){
-            scale2 = "G"; //솔
-            //솔 98 음 인식 좀 이상함
-        }
-        else if(toTransform[0][110]>110 ){
-            scale2 = "A"; //라
-        }
-        else if(toTransform[0][123]>80 || toTransform[0][124] >80  ){
-            scale2 = "B"; //시
+        else if(toTransform[0][493]>80 ||toTransform[0][494]>80 || toTransform[0][495]>80 ||
+                toTransform[0][496]>80  ){
+            scale2 = "B4"; //솔
         }
 
-        else if(toTransform[0][130]>45 || toTransform[0][131]>120 || toTransform[0][118]>45 || toTransform[0][119]>45 ){
-            scale2 = "C";
+        else if(toTransform[0][523]>44 ||toTransform[0][524]>44 || toTransform[0][521]>44  ){
+            scale2 = "C5";
         }
-        else if(toTransform[0][147]>45 || toTransform[0][135]>45){
-            scale2 = "D";
+        else if(toTransform[0][587]>44 ||toTransform[0][588]>44 || toTransform[0][589]>44  ){
+            scale2 = "D5";
         }
-        else if(toTransform[0][165]>45 || toTransform[0][153]>45){
-            scale2 = "E";
+        else if(toTransform[0][660]>15 ||toTransform[0][659]>20 || toTransform[0][662]>20 ||
+                toTransform[0][663]>20 ||toTransform[0][658]>15 || toTransform[0][657]>28 ){
+            scale2 = "E5";
         }
-        else if(toTransform[0][174]>45 || toTransform[0][175]>45 || toTransform[0][176]>45 || toTransform[0][163]>45 ){
-            scale2 = "F";
+        else if(toTransform[0][697]>60 ||toTransform[0][698]>60 ||  toTransform[0][699]>60 || toTransform[0][700]>60  ){
+            scale2 = "F5";
         }
-        else if((toTransform[0][171]>45 && toTransform[0][184]>40) || (toTransform[0][184]>45&& toTransform[0][184]>40)
-            || (toTransform[0][196]>45 && toTransform[0][184]>40)){
-            scale2 = "G";
+        else if(toTransform[0][783]>55 ||toTransform[0][784]>55 ){
+            scale2 = "G5";
         }
-        else if(toTransform[0][221]>60 || toTransform[0][220]>60 || toTransform[0][208]>60){
-            scale2 = "A";
+        else if(toTransform[0][880]>60 ||toTransform[0][881]>60 || toTransform[0][882]>60 ){
+            scale2 = "A5";
         }
-        else if(toTransform[0][223]>45 || toTransform[0][235]>45 || toTransform[0][247]>45 || toTransform[0][248]>45){
-            scale2 = "B";
+        else if(toTransform[0][987]>33 ||toTransform[0][988]>33 || toTransform[0][989]>33 ){
+            scale2 = "B5";
+        }
+        //3옥타브
+        else if(toTransform[0][129]>18 ||toTransform[0][130]>18){
+            scale2 = "C3";
         }
 
-        else if(toTransform[0][34]>33 || toTransform[0][35]>33){
-            scale2 = "C3#";
+        else if(toTransform[0][145]>18 ||toTransform[0][144]>18 ||toTransform[0][146]>18 ){
+            scale2 = "D3";
         }
-        else if(toTransform[0][39]>33){
-            scale2 = "D3#";
+        else if(toTransform[0][164]>18 ||toTransform[0][163]>18 ||toTransform[0][165]>18 ){
+            scale2 = "E3";
         }
-        else if(toTransform[0][46]>33){
-            scale2 = "F3#";
+        else if(toTransform[0][174]>18 ||toTransform[0][173]>18 ||toTransform[0][175]>18 ){
+            scale2 = "F3";
         }
-        else if(toTransform[0][52]>33 || toTransform[0][51]>33 || toTransform[0][50]>33){
-            scale2 = "G3#";
+        else if(toTransform[0][195]>18 ||toTransform[0][196]>18 ||toTransform[0][194]>18 ){
+            scale2 = "G3";
         }
-        else if(toTransform[0][58]>33){
-            scale2 = "A3#";
+        else if(toTransform[0][220]>18 ||toTransform[0][221]>18 ||toTransform[0][119]>18 ){
+            scale2 = "A3";
+        } else if(toTransform[0][246]>18 ||toTransform[0][245]>18 ||toTransform[0][247]>18 ){
+            scale2 = "B3";
         }
-        else if(toTransform[0][64]>33 || toTransform[0][69]>33){
-            scale2 = "C4#";
-        }
-        else if(toTransform[0][79]>33 || toTransform[0][78]>33){
-            scale2 = "D4#";
-        }
-        else if(toTransform[0][92]>33){
-            scale2 = "F4#";
-        }
-        else if(toTransform[0][104]>33){
-            scale2 = "G4#";
-        }
-        else if(toTransform[0][117]>33 || toTransform[0][116]>33){
-            scale2 = "A4#";
-        }
-        else if(toTransform[0][139]>33 ){
-            scale2 = "C5#";
-        }
-        else if(toTransform[0][155]>33 || toTransform[0][156]>33){
-            scale2 = "D5#";
-        }
-        else if(toTransform[0][185]>33 || toTransform[0][186]>33){
-            scale2 = "F5#";
-        }
-        else if(toTransform[0][208]>33 || toTransform[0][209]>33  || toTransform[0][207]>33  ){
-            scale2 = "G5#";
-        }
-        else if(toTransform[0][233]>33 || toTransform[0][234]>33 ){
-            scale2 = "A5#";
-        }
+
+
 
         else{
 
@@ -407,31 +368,6 @@ public class scaleDetector extends Activity implements OnClickListener {
 
         return scale2;
     }
-
-   /* public String whichScale(int k){
-        String scale="dib";
-
-        if(k>250 && k<270 ){
-            scale ="C4"; //도
-        }else if(k>286 && k<302){
-            scale = "D4"; //레
-        }else if(k>320 && k<340)
-        {
-            scale = "E4"; //미
-        } else if(k>378 && k<403){
-            scale ="G4"; //솔
-        }else if(k>427 && k<452){
-            scale = "A4"; //라
-        }
-        else if(k>508&&k<538){
-            scale ="C5"; //도
-        }
-        else{
-            scale = "no";
-        }
-
-        return scale;
-    }*/
 
     @Override
     public void onClick(View arg0) {
