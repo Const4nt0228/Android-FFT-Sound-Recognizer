@@ -1,5 +1,9 @@
+# 1줄 설명
+스마트폰 마이크로 잡은 소리를 주파수로 변환(음계로)
+
 # sound_Vanilla3
 # NoonchiPIANO_FFT
+
 
 ![image](https://user-images.githubusercontent.com/66546156/125195178-86850f80-e28f-11eb-838f-e11b6b069e66.png)
 
