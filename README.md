@@ -110,5 +110,6 @@ AsyncTask를 이용해서 마이크를 동작시키는 RecordAudio가 비동기�
 그후 내부에서 FFT 연산을 수행해준뒤 출력되는 Double 형 배열을 표현 함수에서 사용자에게 보여주게 된다.
 
 # Patch Not4e
-0724 : Noise Suppressor 기능 추가. 얼마나 노이즈 잡힐지는 
+0724 : Noise Suppressor 기능 추가. 얼마나 노이즈 잡힐지는
+0822 : JTransform 으로 완전 이적함. 배열 갯수 4096으로 샘플링갯수와 동일함
 
