@@ -19,7 +19,7 @@ https://github.com/NoonChi-PIANO/noonchi-piano-rep
 ca.uol.aig.fftpack.RealDoubleFFT와  JTransform의 DoubleFFT_1D 둘다 사용해 보았는데 
 RealDoubleFFT의 성능이 조금 더 높기에 전자를 사용했다. 
 
-현재 테스트 중인 피아노 대역대가 0~4096까지며 이렇게 된다면 0~7옥타브까지 측정이 가능하다
+현재 테스트 중인 피아노 대역대가 0~4096 까지며 이렇게 된다면 0~7옥타브까지 측정이 가능하다
 
 ![image](https://user-images.githubusercontent.com/66546156/125195702-c0efac00-e291-11eb-99ba-d88d4db8c1a4.png)
 
